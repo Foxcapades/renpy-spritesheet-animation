@@ -65,29 +65,56 @@ init python:
         This method supports the following file types: [ `"png"`, `"jpg"` ]
 
         Arguments:
+        ----------
         image_path (str): Path to the sprite sheet image file.
-
+        
         x_sprite_count (int): Number of sprites that appear on the sprite
         sheet's x axis.
-
+        
         y_sprite_count (int): Number of sprites that appear on the sprite
         sheet's y axis.
 
         Keyword Arguments:
-        fps (int): Frames per second for the animation.  Defaults to 30.
-
-        looping (bool): Whether the animation should loop.  Defaults to False.
-
+        ------------------
+        fps (int|float): Frames per second for the animation.  This argument is
+        incompatible with `pause`; using both will cause an error.  Defaults to
+        `30`.
+        
+        pause (float): How long to pause between each frame.  This argument is
+        incompatible with `fps`; using both will cause an error.  Defaults to
+        `None`.
+        
+        looping (bool): Whether the animation should loop.  Defaults to
+        `False`.
+        
         hold_last_frame (bool): Whether the animation should hold on the last
-        frame.  Defaults to False.
+        frame.  Defaults to `False`.
 
         Returns:
-        The name of the generated animation.
+        --------
+        image_name (str): The name of the generated animation.
         """
         from uuid import uuid4
 
-        # Frames per second for the animation.
-        fps = int(kwargs["fps"]) if "fps" in kwargs else 30
+        # If the caller set the "fps" keyword argument...
+        if "fps" in kwargs:
+            # and set the "pause" keyword argument...
+            if "pause" in kwargs:
+                # throw an error because that's invalid.
+                raise Exception("cannot set both \"fps\" and \"pause\".")
+            else:
+                # set the pause between frames to the value of 1 second divided
+                # by the target fps.
+                pause = 1.0 / float(kwargs["fps"])
+        # If the caller set the "pause" keyword argument...
+        elif "pause" in kwargs:
+            # Set the pause directly.
+            pause = float(kwargs["pause"])
+        # If the caller did not provide either an "fps" or "pause" keword
+        # argument...
+        else:
+            # Set the pause duration based on 30fps
+            pause = 1.0 / 30
 
         # Whether the animation should loop.
         looping = bool(kwargs["looping"]) if "looping" in kwargs else False
@@ -95,10 +122,6 @@ init python:
         # Whether the animation should hold on the last frame or "vanish" after
         # the last frame.
         hold_last_frame = bool(kwargs["hold_last_frame"]) if "hold_last_frame" in kwargs else False
-
-        # The pause duration between frames is calculated by dividing 1 second
-        # by the FPS.
-        pause = 1.0/fps
 
         # Open the target file to get the width and height of it.
         with renpy.open_file(image_path) as handle:
@@ -163,4 +186,4 @@ init python:
         # And return its name.
         return image_name
 
-image toast = spritesheet_animation("images/explosion.png", 8, 6, fps=45)
+image toast = spritesheet_animation("images/explosion.png", 8, 6, fps=45, hold_last_frame=False)
