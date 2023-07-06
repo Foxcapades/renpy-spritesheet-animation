@@ -135,7 +135,7 @@ This method supports the following file types: `[ "png", "jpg" ]`
 |===
 
 | fps
-| int|float
+| int\|float
 | Frames per second for the animation. Incompatible with the pause keyword
   argument; setting both will cause an error. Defaults to 30.
 
