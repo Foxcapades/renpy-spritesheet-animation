@@ -1,0 +1,14 @@
+.vscode/
+*.save
+*.rpyc
+*.rpyb
+*.rpymc
+
+project.json
+
+game/saves/persistent
+
+log.txt
+traceback.txt
+errors.txt
+
