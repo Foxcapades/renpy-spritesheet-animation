@@ -49,10 +49,17 @@ init python:
 
     def spritesheet_animation(image_path, x_sprite_count, y_sprite_count, **kwargs):
         from uuid import uuid4
-        fps = int(kwargs["fps"]) if "fps" in kwargs else 30
+        if "fps" in kwargs:
+            if "pause" in kwargs:
+                raise Exception("cannot set both \"fps\" and \"pause\".")
+            else:
+                pause = 1.0 / float(kwargs["fps"])
+        elif "pause" in kwargs:
+            pause = float(kwargs["pause"])
+        else:
+            pause = 1.0 / 30
         looping = bool(kwargs["looping"]) if "looping" in kwargs else False
         hold_last_frame = bool(kwargs["hold_last_frame"]) if "hold_last_frame" in kwargs else False
-        pause = 1.0/fps
         with renpy.open_file(image_path) as handle:
             full_width, full_height = get_image_size(handle)
         sprite_width = int(full_width / x_sprite_count)
