@@ -128,8 +128,14 @@ This method supports the following file types: `[ "png", "jpg" ]`
 |===
 
 | fps
-| int
-| Frames per second for the generated animation.  Defaults to `30`.
+| int|float
+| Frames per second for the animation. Incompatible with the pause keyword
+  argument; setting both will cause an error. Defaults to 30.
+
+| pause
+| float
+| How long to pause between each frame. Incompatible with the fps keyword
+  argument; setting both will cause an error. Defaults to None.
 
 | looping
 | bool
