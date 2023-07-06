@@ -96,14 +96,14 @@ animations.
 
 `spritesheet_animation`::
 +
---
 Generates an animation from the given sprite file path.  The given path MUST be
 a valid path relative to the game directory including the file extension, e.g.
 `"images/explosion.png"`.
-
++
 This method supports the following file types: `[ "png", "jpg" ]`
-
++
 .Arguments
+--
 [cols="1m,1m,8"]
 |===
 
@@ -120,8 +120,10 @@ This method supports the following file types: `[ "png", "jpg" ]`
 | int
 | Number of sprites the sprite sheet has along the y-axis.
 |===
-
+--
++
 .Keyword Arguments
+--
 [cols="1m,1m,8"]
 |===
 
@@ -142,14 +144,14 @@ This method supports the following file types: `[ "png", "jpg" ]`
 
 `get_image_size`::
 +
---
 Returns the width and height of the given Ren'Py RWops object representing an
 image.
-
++
 This function should not be called directly, it is here to be used by the
 `spritesheet_animation` function.
-
++
 .Arguments
+--
 [cols="1m,1m,8"]
 |===
 | rwops
