@@ -96,94 +96,56 @@ init python:
         """
         from uuid import uuid4
 
-        # If the caller set the "fps" keyword argument...
         if "fps" in kwargs:
-            # and set the "pause" keyword argument...
             if "pause" in kwargs:
-                # throw an error because that's invalid.
                 raise Exception("cannot set both \"fps\" and \"pause\".")
             else:
-                # set the pause between frames to the value of 1 second divided
-                # by the target fps.
                 pause = 1.0 / float(kwargs["fps"])
-        # If the caller set the "pause" keyword argument...
         elif "pause" in kwargs:
-            # Set the pause directly.
             pause = float(kwargs["pause"])
-        # If the caller did not provide either an "fps" or "pause" keword
-        # argument...
         else:
-            # Set the pause duration based on 30fps
             pause = 1.0 / 30
 
-        # Whether the animation should loop.
         looping = bool(kwargs["looping"]) if "looping" in kwargs else False
 
-        # Whether the animation should hold on the last frame or "vanish" after
-        # the last frame.
         hold_last_frame = bool(kwargs["hold_last_frame"]) if "hold_last_frame" in kwargs else False
 
-        # Open the target file to get the width and height of it.
         with renpy.open_file(image_path) as handle:
             full_width, full_height = get_image_size(handle)
 
-        # Calculate the size of the individual sprites on the sprite sheet by
-        # dividing the total size of the sheet by the x and y counts.
         sprite_width = int(full_width / x_sprite_count)
         sprite_height = int(full_height / y_sprite_count)
         sprite_count = x_sprite_count * y_sprite_count
 
-        # Load the image into Ren'Py
         img = Image(image_path)
 
-        # List to hold the animation components.  This list contains non-tuple
-        # pairs of images and pause durations.  For example:
-        # [ image, pause, image, pause, image, pause ]
         frames = []
 
         current_x = 0
         current_y = 0
 
-        # Iterate through the frames on the sprite sheet then...
         for i in range(sprite_count):
 
-            # If we have reached the end of the line (x-axis) shift to the next
-            # line.
             if current_x == x_sprite_count:
                 current_y += 1
                 current_x = 0
 
-            # Crop the sprite sheet down to just the singular sprite in the
-            # sprite sheet and append it to our frames list.
             frames.append(Transform(img, crop=(current_x * sprite_width, current_y * sprite_height, sprite_width, sprite_height)))
-
-            # Append the pause duration to the frames list.
             frames.append(pause)
 
             current_x += 1
 
-        # If we don't want the animation to loop
         if not looping:
-            # And we don't want to hold on the last frame.
             if not hold_last_frame:
-                # end the animation with a clear frame (with no following duration).
                 renpy.image("clear_solid_last_animation_frame", Solid("#ffffff00"))
                 frames.append("clear_solid_last_animation_frame")
-            # And we _do_ want to hold on the last frame
             else:
-                # remove the last pause duration item from the animation_parts
-                # list to set the last frame to have no set pause duration
                 frames.pop()
 
-        # Generate a "random" value for the "name" of the animation. This should
-        # not be referenced by human written code so the value doesn't actually
-        # matter as long as it is unique.
         image_name = str(uuid4())
 
-        # Generate a new image for our animation
         renpy.image(image_name, Animation(*frames))
 
-        # And return its name.
         return image_name
 
 image toast = spritesheet_animation("images/explosion.png", 8, 6, fps=45, hold_last_frame=False)
