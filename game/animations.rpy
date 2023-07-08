@@ -67,10 +67,10 @@ init python:
         Arguments:
         ----------
         image_path (str): Path to the sprite sheet image file.
-        
+
         x_sprite_count (int): Number of sprites that appear on the sprite
         sheet's x axis.
-        
+
         y_sprite_count (int): Number of sprites that appear on the sprite
         sheet's y axis.
 
@@ -79,14 +79,14 @@ init python:
         fps (int|float): Frames per second for the animation.  This argument is
         incompatible with `pause`; using both will cause an error.  Defaults to
         `30`.
-        
+
         pause (float): How long to pause between each frame.  This argument is
         incompatible with `fps`; using both will cause an error.  Defaults to
         `None`.
-        
+
         looping (bool): Whether the animation should loop.  Defaults to
         `False`.
-        
+
         hold_last_frame (bool): Whether the animation should hold on the last
         frame.  Defaults to `False`.
 
