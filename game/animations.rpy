@@ -148,4 +148,4 @@ init python:
 
         return image_name
 
-image toast = spritesheet_animation("images/explosion.png", 8, 6, fps=45, hold_last_frame=False)
+image toast = spritesheet_animation("images/explosion.png", 8, 6, fps=45)
