@@ -1,4 +1,4 @@
-= Demo of Animations from Sprite Sheets
+= Animations from Sprite Sheets
 :source-highlighter: highlight.js
 
 A basic Ren'Py demonstration of generating animations based on `png` or `jpg`
