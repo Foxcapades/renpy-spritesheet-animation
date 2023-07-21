@@ -1,4 +1,4 @@
-LAST_TAG = $(shell git describe --tags --abbrev=0)
+LAST_TAG = $(shell git describe --tags --abbrev=0 | sed 's/v\(.\+\)/\1/')
 CONFIG_VERSION = $(shell grep 'define config.version' game/options.rpy | sed 's/.\+"\(.\+\)"/\1/')
 
 SLIM_ZIP_NAME := "releases/spritesheet-animations-slim-$(LAST_TAG).zip"
@@ -11,6 +11,8 @@ default:
 
 .PHONY: release
 release: clean
+	@echo "LAST_TAG = $(LAST_TAG)"
+	@echo "CONFIG_VERSION = $(CONFIG_VERSION)"
 	@if [ "$(LAST_TAG)" != "$(CONFIG_VERSION)" ]; then echo "Version mismatch!"; exit 1; fi
 	@mkdir -p "releases"
 	@cp license spritesheet-animations-license
