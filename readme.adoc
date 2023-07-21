@@ -63,6 +63,25 @@ This method supports the following file types: `[ "png", "jpg" ]`
 |===
 --
 
+== Caveats
+
+. This function does not allow the creation of animations with different pause
+times between frames.  For example replicating the following is not possible:
++
+[source, python]
+----
+image foobar:
+    "frame01"
+    pause 0.1
+    "frame02"
+    pause 0.2
+    "frame03"
+    pause 0.3
+----
+. All the sprites on the sprite sheet must be the same size, the function will
+divide the sprite sheet evenly by the given `x_sprite_count` and
+`y_sprite_count` values.
+
 == Credits
 
 * `__get_image_size` adapted from an answer on
