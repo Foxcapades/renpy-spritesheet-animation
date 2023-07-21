@@ -78,7 +78,8 @@ init python:
             current_x += 1
         if not looping:
             if not hold_last_frame:
-                renpy.image("clear_solid_last_animation_frame", Solid("#ffffff00"))
+                if not renpy.has_image("clear_solid_last_animation_frame"):
+                    renpy.image("clear_solid_last_animation_frame", Solid("#ffffff00"))
                 frames.append("clear_solid_last_animation_frame")
             else:
                 frames.pop()
