@@ -4,112 +4,19 @@
 Source code for and a basic demonstration of generating animations based on
 `png` or `jpg` sprite sheet files.
 
-The demo is playable but the meat of the project is the source code found in
-link:game/animations.rpy[animations.rpy].
-
-== Quick Usage
-
-. Put your sprite sheet in your images game directory (or anywhere else in your
-  game directory).
-. Put this blob in your code somewhere:
-+
-[source, python]
-----
-init python:
-    def get_image_size(rwops):
-        import struct
-        import imghdr
-        head = rwops.read(24)
-        if len(head) != 24:
-            raise Exception("Invalid or corrupt image file: " + rwops.name)
-        if imghdr.what(rwops.name) == 'png':
-            check = struct.unpack('>i', head[4:8])[0]
-            if check != 0x0d0a1a0a:
-                raise Exception("Invalid PNG file: " + rwops.name)
-            width, height = struct.unpack('>ii', head[16:24])
-        elif imghdr.what(rwops.name) == 'jpeg':
-            try:
-                rwops.seek(0)
-                size = 2
-                ftype = 0
-                while not 0xc0 <= ftype <= 0xcf:
-                    rwops.seek(size, 1)
-                    byte = rwops.read(1)
-                    while ord(byte) == 0xff:
-                        byte = rwops.read(1)
-                    ftype = ord(byte)
-                    size = struct.unpack('>H', rwops.read(2))[0] - 2
-                rwops.seek(1, 1)
-                height, width = struct.unpack('>HH', rwops.read(4))
-            except Exception:
-                raise Exception("Failed to read JPEG headers from file: " + rwops.name)
-        else:
-            raise Exception("unsupported image type on file: " + rwops.name)
-        return width, height
-
-    def spritesheet_animation(image_path, x_sprite_count, y_sprite_count, **kwargs):
-        from uuid import uuid4
-        if "fps" in kwargs:
-            if "pause" in kwargs:
-                raise Exception("cannot set both \"fps\" and \"pause\".")
-            else:
-                pause = 1.0 / float(kwargs["fps"])
-        elif "pause" in kwargs:
-            pause = float(kwargs["pause"])
-        else:
-            pause = 1.0 / 30
-        looping = bool(kwargs["looping"]) if "looping" in kwargs else False
-        hold_last_frame = bool(kwargs["hold_last_frame"]) if "hold_last_frame" in kwargs else False
-        with renpy.open_file(image_path) as handle:
-            full_width, full_height = get_image_size(handle)
-        sprite_width = int(full_width / x_sprite_count)
-        sprite_height = int(full_height / y_sprite_count)
-        sprite_count = x_sprite_count * y_sprite_count
-        img = Image(image_path)
-        frames = []
-        current_x = 0
-        current_y = 0
-        for i in range(sprite_count):
-            if current_x == x_sprite_count:
-                current_y += 1
-                current_x = 0
-            frames.append(Transform(img, crop=(current_x * sprite_width, current_y * sprite_height, sprite_width, sprite_height)))
-            frames.append(pause)
-            current_x += 1
-        if not looping:
-            if not hold_last_frame:
-                if not renpy.has_image("clear_solid_last_animation_frame"):
-                    renpy.image("clear_solid_last_animation_frame", Solid("#ffffff00"))
-                frames.append("clear_solid_last_animation_frame")
-            else:
-                frames.pop()
-        image_name = str(uuid4())
-        renpy.image(image_name, Animation(*frames))
-        return image_name
-----
-. Now you can generate animations from sprite sheets:
-+
 [source, python]
 ----
 image explosion = spritesheet_animation("images/explosion.png", 8, 6)
 ----
 
-== Functions
+== The `spritesheet_animation` Function
 
-This demo includes 2 functions, `get_image_size` and `spritesheet_animation`.
-The function `get_image_size` is a helper function and shouldn't be called
-directly (unless you know what you are doing).  The primary function,
-`spritesheet_animation`, is the method that should be called to generate
-animations.
-
-`spritesheet_animation`::
-+
 Generates an animation from the given sprite file path.  The given path MUST be
 a valid path relative to the game directory including the file extension, e.g.
 `"images/explosion.png"`.
-+
+
 This method supports the following file types: `[ "png", "jpg" ]`
-+
+
 .Arguments
 --
 [cols="1m,1m,8"]
@@ -129,7 +36,7 @@ This method supports the following file types: `[ "png", "jpg" ]`
 | Number of sprites the sprite sheet has along the y-axis.
 |===
 --
-+
+
 .Keyword Arguments
 --
 [cols="1m,1m,8"]
@@ -153,24 +60,6 @@ This method supports the following file types: `[ "png", "jpg" ]`
 | bool
 | Whether the animation should hold on the last frame or "vanish" after the last
   frame has played.  Defaults to `False` (vanishing).
-|===
---
-
-`get_image_size`::
-+
-Returns the width and height of the given Ren'Py RWops object representing an
-image.
-+
-This function should not be called directly, it is here to be used by the
-`spritesheet_animation` function.
-+
-.Arguments
---
-[cols="1m,1m,8"]
-|===
-| rwops
-| RWops
-| Ren'Py `RWops` object.
 |===
 --
 
