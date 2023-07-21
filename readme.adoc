@@ -65,7 +65,7 @@ This method supports the following file types: `[ "png", "jpg" ]`
 
 == Credits
 
-* `get_image_size` adapted from an answer on
+* `__get_image_size` adapted from an answer on
   link:https://stackoverflow.com/a/20380514[this StackOverflow question].
 * `explosion.png` from https://www.pngegg.com/en/png-nvowz
 
