@@ -9,6 +9,11 @@ Source code for and a basic demonstration of generating animations based on
 image explosion = spritesheet_animation("images/explosion.png", 8, 6)
 ----
 
+[IMPORTANT]
+--
+Requires Ren'Py 8.3+
+--
+
 == The `spritesheet_animation` Function
 
 Generates an animation from the given sprite file path.  The given path MUST be
