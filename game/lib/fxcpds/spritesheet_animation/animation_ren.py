@@ -132,17 +132,17 @@ def __get_image_size(rwops):
     head = rwops.read(24)
 
     if len(head) != 24:
-        raise Exception("Invalid or corrupt image file: " + rwops.name)
+        raise Exception("Invalid or corrupt image file: " + rwops.raw.raw.name)
 
-    if imghdr.what(rwops.name) == 'png':
+    if imghdr.what(rwops.raw.raw.name) == 'png':
         check = struct.unpack('>i', head[4:8])[0]
 
         if check != 0x0d0a1a0a:
-            raise Exception("Invalid PNG file: " + rwops.name)
+            raise Exception("Invalid PNG file: " + rwops.raw.raw.name)
 
         width, height = struct.unpack('>ii', head[16:24])
 
-    elif imghdr.what(rwops.name) == 'jpeg':
+    elif imghdr.what(rwops.raw.raw.name) == 'jpeg':
         try:
             rwops.seek(0)
             size = 2
@@ -160,9 +160,9 @@ def __get_image_size(rwops):
             height, width = struct.unpack('>HH', rwops.read(4))
 
         except Exception:
-            raise Exception("Failed to read JPEG headers from file: " + rwops.name)
+            raise Exception("Failed to read JPEG headers from file: " + rwops.raw.raw.name)
 
     else:
-        raise Exception("unsupported image type on file: " + rwops.name)
+        raise Exception("unsupported image type on file: " + rwops.raw.raw.name)
 
     return width, height
